@@ -1,0 +1,8 @@
+import boto3
+session=boto3.session.Session(profile_name="augie-admin")
+console=session.resource(service_name="ec2",region_name="ap-south-1")
+my_instance=console.Instance(id="i-0c023b487567d1a89")
+#print(dir(my_instance)) # Before running check for all the ec2 operations
+my_instance.start() # to start the instance
+my_instance.stop() # to stop the instance
+my_instance.terminate()
