@@ -1,0 +1,14 @@
+import boto3
+session=boto3.session.Session(profile_name="augie-admin")
+con=session.resource(service_name="ec2",region_name="ap-south-1")
+in_id=input("Enter the Instance ID : ")
+my_inst=con.Instance(id=in_id)
+#print(dir(my_inst))
+print(my_inst.tags)
+
+OUTPUT :
+
+Enter the Instance ID : i-0c023b487567d1a89
+[{'Key': 'user:ENV', 'Value': 'PROD'}, {'Key': 'user:Application', 'Value': 'APIM'}, {'Key': 'user:ITTeamOwner', 'Value': 'CoreServices'}]
+
+Process finished with exit code 0
