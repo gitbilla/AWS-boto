@@ -1,0 +1,23 @@
+import boto3
+print("Find the Instances")
+print("######################  Resource Method  ######################")
+def drawline():
+    print("#############################################################################")
+session=boto3.session.Session(profile_name="augie-admin")
+ec2_con_re=session.resource(service_name="ec2",region_name="ap-south-1")
+#print(ec2_con_re.instances.all())
+for each_inst in ec2_con_re.instances.all():
+    print(each_inst.id, each_inst.state['Name'])
+drawline()
+...
+#print(each_inst.instance_id.upper())
+#print(each_inst.instance_id)
+...
+
+OUTPUT : 
+
+Find the Instances
+######################  Resource Method  ######################
+i-0c023b487567d1a89 stopped
+i-018d5e556eea2fa2b terminated
+#############################################################################
