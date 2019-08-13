@@ -1,0 +1,14 @@
+import boto3
+session=boto3.session.Session(profile_name="augie-admin")
+ec2_con_re=session.resource(service_name="ec2", region_name="ap-south-1")
+'''
+for each_in in ec2_con_re.instances.all():
+    print(each_in.id, each_in.state)
+# print Instances which are Running and stopped
+#f={"Name": "", "Values":[]} # variable 
+'''
+
+f1={"Name":"instance-state-name", "Values":["running","stopped"]}
+ftags={"Name":'tag:dev', 'Values':['db','web']}
+for each_in in ec2_con_re.instances.filter(Filters=[ftags], InstanceIds=['i-0c023b487567d1a89']):
+    print(each_in.id, each_in.state)
