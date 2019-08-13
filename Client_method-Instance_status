@@ -1,0 +1,7 @@
+import  boto3
+session=boto3.session.Session(profile_name="augie-admin")
+ec2_con_cli=session.client(service_name="ec2",region_name="ap-south-1")
+#print(ec2_con_cli.describe_instances()["Reservations"])
+for each_info in ec2_con_cli.describe_instances()["Reservations"]:
+    for each_inst in each_info['Instances']:
+        print(each_inst["InstanceId"], each_inst["InstanceType"])
