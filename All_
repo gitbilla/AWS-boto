@@ -4,6 +4,11 @@ profile='augie-admin'
 session=boto3.session.Session(profile_name=profile)
 ec2_con_re=session.resource(service_name="ec2",region_name="ap-south-1")
 ec2_con_cl=session.client(service_name="ec2",region_name="ap-south-1")
+
+print("Account Number: ")
+sts_client=session.client("sts")
+print(sts_client.get_caller_identity().get("Account"))
+
 def drawline():
     print("###########################################################################################################")
 drawline()
