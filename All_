@@ -1,0 +1,35 @@
+import  boto3
+import  pprint
+profile='augie-admin'
+session=boto3.session.Session(profile_name=profile)
+ec2_con_re=session.resource(service_name="ec2",region_name="ap-south-1")
+ec2_con_cl=session.client(service_name="ec2",region_name="ap-south-1")
+def drawline():
+    print("###########################################################################################################")
+drawline()
+# Function Resource method
+def Resources():
+    for each_instance in ec2_con_re.instances.all():
+        print(each_instance.id, each_instance.state['Name'])
+# Function Client method
+
+def Client():
+    # print(ec2_con_cl.describe_instances().keys()) # find the keys
+    for each_cli in ec2_con_cl.describe_instances()['Reservations']:
+        for each_another_cli in each_cli['Instances']:
+            print(each_another_cli['InstanceId'], each_another_cli['State'])
+def Avai_zone():
+
+    zone=[]
+    for each_regions in ec2_con_cl.describe_regions().get('Regions'):
+        zone.append((each_regions.get('RegionName')))
+    print(zone)
+
+print("The List of Instance Status from Resources Method :")
+Resources()
+drawline()
+print("The List of Instance Status from Client Method :")
+Client()
+drawline()
+print("The List of regions using Client resource :")
+Avai_zone()
