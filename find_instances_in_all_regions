@@ -1,0 +1,18 @@
+import boto3
+import pprint
+session=boto3.Session(profile_name='augie-admin',region_name="ap-south-1")
+client=session.client(service_name="ec2")
+all_regions=client.describe_regions()
+#print(all_regions['Regions'])
+list_of_all_regions=[]
+for each_region in all_regions['Regions']:
+    # print(each_region['RegionName'])
+    list_of_all_regions.append(each_region['RegionName'])
+print(list_of_all_regions)
+#create a session for each region
+for each_reg in list_of_all_regions:
+    session=boto3.Session(profile_name='augie-admin', region_name=each_reg)
+    resource=session.resource(service_name="ec2")
+    print("List of EC2 Instances from the region: ", each_reg)
+    for each_in in resource.instances.all():
+        print(each_in.id, each_in.state['Name'])
