@@ -1,0 +1,14 @@
+import boto3
+session=boto3.session.Session(profile_name="augie-admin") # session object
+ec2_res=session.resource(service_name="ec2", region_name="ap-south-1") # resource object
+ec2_cli=session.client(service_name="ec2", region_name="ap-south-1") # client object
+sts_cli=session.client("sts")
+ownacc=sts_cli.get_caller_identity().get("Account")
+print("############   CLIENT METHOD  #################################")
+for each_snap in ec2_cli.describe_snapshots(OwnerIds=[ownacc])['Snapshots']:
+    print(each_snap["SnapshotId"])
+
+
+print("############   RESOURCE METHOD  #################################")
+for each_snap in ec2_res.snapshots.filter(OwnerIds=[ownacc]):
+    print(each_snap.id)
