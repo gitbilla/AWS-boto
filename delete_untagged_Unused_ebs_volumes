@@ -1,0 +1,45 @@
+import boto3
+session=boto3.session.Session(profile_name="augie-admin")
+ec2_re=session.resource(service_name="ec2", region_name="ap-south-1")
+ec2_cli=session.client(service_name="ec2", region_name="ap-south-1")
+# list all the EBS volumes
+print("All the Volumes with the tags are :")
+for each_vol in ec2_re.volumes.all():
+    print(each_vol.id, each_vol.state, each_vol.tags)
+print("##############################################################################################")
+print("Display only available Volumes through boto3 method")
+febsu={'Name':'status', 'Values':['available']}
+for each_vol in ec2_re.volumes.filter(Filters=[febsu]):
+    print(each_vol.id, each_vol.state, each_vol.tags)
+print("##############################################################################################")
+print("Display only available Volumes through python method")
+for each_vol in ec2_re.volumes.all():
+    if each_vol.state=="available":
+        print(each_vol.id, each_vol.state, each_vol.tags)
+print("##############################################################################################")
+print("list all the empty tags")
+for each_vol in ec2_re.volumes.all():
+    if each_vol.state=="available" and each_vol.tags==None:
+        print(each_vol.id, each_vol.state, each_vol.tags)
+print("##############################################################################################")
+print("Store the volume output in a variable 'all_required_volume_ids'")
+all_required_volume_ids=[]
+for each_vol in ec2_re.volumes.all():
+    if each_vol.state=="available" and each_vol.tags==None:
+        print(each_vol.id, each_vol.state, each_vol.tags)
+        all_required_volume_ids.append(each_vol.id)
+print("##############################################################################################")
+print("Deleting the Volumes: ")
+for each_vol in all_required_volume_ids:
+    volume_ob=ec2_re.Volume(each_vol)
+    #print(dir(volume_ob))
+    print("Deleting volume of id", each_vol)
+    volume_ob.delete()
+
+# script should wait till the successful deletion of Volumes
+waiter=ec2_cli.get_waiter('volume_deleted')
+try:
+    waiter.wait(VolumeIds=all_required_volume_ids)
+    print("Successfully Deleted all the Volumes which are untagged and unused")
+except Exception as e:
+    print(e)
