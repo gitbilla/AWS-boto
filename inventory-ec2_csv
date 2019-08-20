@@ -1,0 +1,22 @@
+import boto3
+#from pprint import pprint
+import csv
+session=boto3.session.Session(profile_name="augie-admin")
+ec2_re=session.resource(service_name="ec2",region_name="ap-south-1")
+ec2_cli=session.client(service_name="ec2",region_name="ap-south-1")
+header_csv=['S_no','In_ID','In_Type','In_Arc','In_IP','In_Private']
+S_no = 1
+fo=open("ec2_inv.csv","w")
+csv_w=csv.writer(fo)
+csv_w.writerow(header_csv)
+for each_inst in ec2_re.instances.all():
+    #pprint(dir(each_inst))
+    In_ID=each_inst.instance_id
+    In_Type=each_inst.instance_type
+    In_Arc=each_inst.architecture
+    In_IP=each_inst.public_ip_address
+    In_Private=each_inst.private_ip_address
+    print(S_no,In_ID,In_Type,In_Arc,In_IP,In_Private)
+    csv_w.writerow([S_no,In_ID,In_Type,In_Arc,In_IP,In_Private])
+    S_no=S_no+1
+fo.close()
